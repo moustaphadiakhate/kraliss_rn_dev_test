@@ -6,7 +6,10 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import DashboardScreen from '../screens/DashboardScreen';
 import UserListScreen from '../screens/UserListScreen';
 import UserDetailScreen from '../screens/UserDetailScreen';
+import CreateUserScreen from '../screens/CreateUserScreen';
+import ResourceScreen from '../screens/ResourceScreen';
 import ReduxDetailScreen from '../screens/ReduxDetailScreen';
+import PdfSreen from '../screens/PdfSreen';
 
 const Stack = createStackNavigator();
 
@@ -56,8 +59,10 @@ export default function HomeStack() {
     <Stack.Navigator initialRouteName="DashboardScreen" headerMode="none">
       <Stack.Screen name="DashboardScreen" component={DashboardScreen} />
       <Stack.Screen name="UserListScreen" component={UserListScreen} />
-      <Stack.Screen name="UserDetailScreen" component={UserDetailScreen} />
+      <Stack.Screen name="CreateUserScreen" component={CreateUserScreen} />
+      <Stack.Screen name="ResourceScreen" component={ResourceScreen} />
       <Stack.Screen name="ReduxDetailScreen" component={ReduxDetailScreen} />
+      <Stack.Screen name="PdfSreen" component={PdfSreen} />
     </Stack.Navigator>
   );
 }
