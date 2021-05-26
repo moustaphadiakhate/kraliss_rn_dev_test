@@ -5,6 +5,7 @@
 // action with type will be dispatched on start, and then followed by type suffixed with underscore and
 // success suffix on success, or error suffix on error
 // defaults: success suffix = "_SUCCESS" error suffix = "_FAIL"
+import {navigation} from '../providers/navigationService';
 
 import {
   GET_USERS,
@@ -99,6 +100,7 @@ export default function reducer(state = initialState, action) {
     case LOGIN:
       return {...state, login: {...state.login, loading: true}};
     case LOGIN_SUCCESS:
+      navigate('DashboardScreen');
       console.log('reducer action.payload: ' + JSON.stringify(action.payload));
       return {
         ...state,
@@ -124,6 +126,7 @@ export default function reducer(state = initialState, action) {
     case REGISTER:
       return {...state, register: {...state.register, loading: true}};
     case REGISTER_SUCCESS:
+      navigate('DashboardScreen');
       console.log('reducer action.payload: ' + JSON.stringify(action.payload));
       return {
         ...state,
@@ -134,7 +137,7 @@ export default function reducer(state = initialState, action) {
         },
       };
     case REGISTER_FAIL:
-      console.log('reducer action.payload: ' + JSON.stringify(action.error));
+      navigate('RegisterError', {message: action.error});
       console.log('reducer action.payload: ' + JSON.stringify(action.error));
       return {
         ...state,
@@ -180,6 +183,10 @@ export default function reducer(state = initialState, action) {
 // a new state based on all the dispatched actions, being the most important the GET_USERS_SUCCCESS where we
 // extract the users info from the action.payload (response from the API).
 
+const navigate = (route, params) => {
+  navigation.navigate(route, params);
+};
+
 export const getUsersList = () => {
   return {
     type: GET_USERS,
@@ -213,14 +220,6 @@ export const login = (email, password) => {
           email,
           password,
         },
-        options: {
-          onError({getState, dispatch, error}) {
-            dispatch({
-              type: LOGIN_FAIL,
-              payload: error.response,
-            });
-          },
-        },
       },
     },
   };
@@ -237,14 +236,6 @@ export const register = (email, password) => {
           email,
           password,
         },
-        options: {
-          onError({getState, dispatch, error}) {
-            dispatch({
-              type: REGISTER_FAIL,
-              payload: error.response,
-            });
-          },
-        },
       },
     },
   };
@@ -259,14 +250,6 @@ export const addUser = user => {
         url: '/users',
         data: {
           user: user,
-        },
-        options: {
-          onError({getState, dispatch, error}) {
-            dispatch({
-              type: CREATE_NEW_USER_FAIL,
-              payload: error.response,
-            });
-          },
         },
       },
     },
