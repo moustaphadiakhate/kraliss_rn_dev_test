@@ -226,7 +226,7 @@ export const login = (email, password) => {
   };
 };
 
-export const register = user => {
+export const register = (email, password) => {
   return {
     type: REGISTER,
     payload: {
@@ -258,8 +258,7 @@ export const addUser = user => {
         method: 'POST',
         url: '/users',
         data: {
-          email,
-          password,
+          user: user,
         },
         options: {
           onError({getState, dispatch, error}) {
