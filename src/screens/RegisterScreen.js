@@ -88,7 +88,6 @@ class RegisterScreen extends Component {
 
 const mapStateToProps = state => {
   let register = {...state.register};
-  console.log('mapStateToProps: register ' + JSON.stringify(register));
   return {
     RegisterStarte: register,
   };

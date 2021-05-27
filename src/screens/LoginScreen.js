@@ -25,7 +25,7 @@ class LoginScreen extends Component {
 
   onClickListener = () => {
     this.props.login(this.state.email, this.state.password);
-    this.setState({triedAuth: true, email: '', password: ''});
+    this.setState({triedAuth: true});
   };
 
   errorHandler = () => {
@@ -94,9 +94,6 @@ class LoginScreen extends Component {
 
 const mapStateToProps = state => {
   let login = {...state.login};
-  console.log(
-    'mapStateToProps state: login ' + login.error + JSON.stringify(login),
-  );
   return {
     loginState: login,
   };

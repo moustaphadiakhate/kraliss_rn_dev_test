@@ -86,7 +86,6 @@ class CreateUserScreen extends Component {
 
 const mapStateToProps = state => {
   let newUser = {...state.newUser};
-  console.log('mapStateToProps state: newUser ' + JSON.stringify(newUser));
   return {
     newUser: newUser,
   };

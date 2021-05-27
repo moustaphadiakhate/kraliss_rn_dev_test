@@ -74,7 +74,6 @@ class UserListScreen extends Component {
 
 const mapStateToProps = state => {
   let users = {...state.users};
-  console.log('mapStateToProps state: userlist' + JSON.stringify(users));
   return {
     data: users.data,
     error: users.error,
