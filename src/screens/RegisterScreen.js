@@ -10,6 +10,7 @@ import {
 import {connect} from 'react-redux';
 import {register} from '../store/reducer';
 import Theme from '../ThemeVars';
+import UiLoad from '../components/common/UiFetching';
 
 class RegisterScreen extends Component {
   constructor(props) {
@@ -46,6 +47,7 @@ class RegisterScreen extends Component {
             keyboardType="email-address"
             underlineColorAndroid="transparent"
             onChangeText={email => this.setState({email})}
+            value={this.state.email}
           />
         </View>
 
@@ -60,6 +62,7 @@ class RegisterScreen extends Component {
             secureTextEntry={true}
             underlineColorAndroid="transparent"
             onChangeText={password => this.setState({password})}
+            value={this.state.password}
           />
         </View>
 
@@ -76,6 +79,8 @@ class RegisterScreen extends Component {
           disabled={this.props.RegisterStarte.loading}>
           <Text style={styles.loginText}>Login</Text>
         </TouchableHighlight>
+
+        <UiLoad loading={this.props.RegisterStarte.loading} />
       </View>
     );
   }

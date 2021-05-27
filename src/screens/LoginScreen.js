@@ -11,6 +11,7 @@ import {connect} from 'react-redux';
 import {login} from '../store/reducer';
 import Theme from '../ThemeVars';
 import Modal from '../components/common/Modal';
+import UiLoad from '../components/common/UiFetching';
 
 class LoginScreen extends Component {
   constructor(props) {
@@ -52,6 +53,7 @@ class LoginScreen extends Component {
             keyboardType="email-address"
             underlineColorAndroid="transparent"
             onChangeText={email => this.setState({email})}
+            value={this.state.email}
           />
         </View>
 
@@ -66,6 +68,7 @@ class LoginScreen extends Component {
             secureTextEntry={true}
             underlineColorAndroid="transparent"
             onChangeText={password => this.setState({password})}
+            value={this.state.password}
           />
         </View>
 
@@ -82,6 +85,8 @@ class LoginScreen extends Component {
           disabled={this.props.loginState.loading}>
           <Text style={styles.registerText}>Register</Text>
         </TouchableHighlight>
+
+        <UiLoad loading={this.props.loginState.loading} />
       </View>
     );
   }

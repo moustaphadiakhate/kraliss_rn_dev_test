@@ -5,12 +5,12 @@ import {
   View,
   TextInput,
   TouchableHighlight,
-  Image,
 } from 'react-native';
 import {connect} from 'react-redux';
-import {addUser} from '../store/reducer';
+import {addUser, creanCreate} from '../store/reducer';
 import Theme from '../ThemeVars';
 import Modal from '../components/common/Modal';
+import UiLoad from '../components/common/UiFetching';
 
 class CreateUserScreen extends Component {
   constructor(props) {
@@ -27,8 +27,17 @@ class CreateUserScreen extends Component {
     this.setState({triedCreate: true, nom: '', prenom: ''});
   };
 
+  onModalCosed = () => {
+    this.props.creanCreate();
+    this.setState({triedCreate: false});
+  };
+
   errorHandler = () => {
-    return this.props.newUser.triedCreate && this.state.triedCreate;
+    return (
+      !this.props.newUser.loading &&
+      this.props.newUser.triedCreate &&
+      this.state.triedCreate
+    );
   };
 
   render() {
@@ -38,17 +47,16 @@ class CreateUserScreen extends Component {
           modalVisible={this.errorHandler()}
           message={
             this.props.newUser.success
-              ? this.props.newUser.data
+              ? JSON.stringify(this.props.newUser.data)
               : this.props.newUser.error
           }
           success={this.props.newUser.success}
-          onRequestClose={() => this.setState({triedCreate: false})}
+          onRequestClose={() => this.onModalCosed()}
         />
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.inputs}
             placeholder="Nom"
-            keyboardType="default"
             underlineColorAndroid="transparent"
             onChangeText={nom => this.setState({nom})}
           />
@@ -69,6 +77,8 @@ class CreateUserScreen extends Component {
           disabled={this.props.newUser.loading}>
           <Text style={styles.createText}>Ajouter</Text>
         </TouchableHighlight>
+
+        <UiLoad loading={this.props.newUser.loading} />
       </View>
     );
   }
@@ -84,6 +94,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   addUser,
+  creanCreate,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateUserScreen);

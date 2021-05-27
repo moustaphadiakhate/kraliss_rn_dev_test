@@ -12,6 +12,7 @@ import {
 import {connect} from 'react-redux';
 import {getUsersList} from '../store/reducer';
 import Theme from '../ThemeVars';
+import UiLoad from '../components/common/UiFetching';
 
 class UserListScreen extends Component {
   constructor(props) {
@@ -56,7 +57,8 @@ class UserListScreen extends Component {
     const {data} = this.props.data;
 
     return (
-      <View style={{flex: 1}}>
+      <View style={styles.container}>
+        {this.props.loading && <UiLoad loading={this.props.loading} />}
         <FlatList
           extraData={this.state}
           data={data || []}
@@ -87,6 +89,7 @@ const mapDispatchToProps = {
 export default connect(mapStateToProps, mapDispatchToProps)(UserListScreen);
 
 const styles = StyleSheet.create({
+  container: {flex: 1, justifyContent: 'center', alignItems: 'center'},
   row: {
     flexDirection: 'row',
     alignItems: 'center',

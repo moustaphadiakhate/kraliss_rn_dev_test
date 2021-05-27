@@ -11,6 +11,7 @@ import {
 import {connect} from 'react-redux';
 import {getResourceList} from '../store/reducer';
 import Theme from '../ThemeVars';
+import UiLoad from '../components/common/UiFetching';
 
 class ResourceScreen extends Component {
   constructor(props) {
@@ -36,6 +37,8 @@ class ResourceScreen extends Component {
 
     return (
       <View style={styles.container}>
+        {this.props.loading && <UiLoad loading={this.props.loading} />}
+
         <FlatList
           style={styles.itemList}
           data={data || []}
@@ -83,7 +86,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(ResourceScreen);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#EBEBEB',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   itemList: {
     marginTop: 20,

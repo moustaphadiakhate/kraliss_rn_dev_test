@@ -14,7 +14,7 @@ const RegisterErrorScreen = props => {
     <View style={styles.container}>
       <Modal
         modalVisible={modalVisible}
-        message={JSON.stringify(props.route.params.message)}
+        message={'Error while register ' + props.route.params.message}
         onRequestClose={() => setModalVisible(false)}
       />
       <Menu style={{top: 20}} items={menu} />
