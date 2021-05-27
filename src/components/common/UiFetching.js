@@ -1,18 +1,16 @@
 import React from 'react';
 import {Image, StyleSheet, View} from 'react-native';
 
-const UiFetching = ({loading, style}) => {
+const UiFetching = ({loading}) => {
   if (!loading) {
     return null;
   }
 
   return (
-    <View style={[styles.loading, style]}>
-      <Image
-        style={styles.loading}
-        source={require('../../assets/loading.gif')}
-      />
-    </View>
+    <Image
+      style={styles.loading}
+      source={require('../../assets/loading.gif')}
+    />
   );
 };
 
@@ -20,9 +18,7 @@ export default UiFetching;
 
 const styles = StyleSheet.create({
   loading: {
-    width: 30,
-    height: 30,
-    borderBottomColor: 'red',
-    borderWidth: 2,
+    width: 50,
+    height: 50,
   },
 });
