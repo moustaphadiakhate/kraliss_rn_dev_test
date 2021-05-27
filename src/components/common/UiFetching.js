@@ -10,7 +10,7 @@ const UiFetching = ({loading, style}) => {
     <View style={[styles.loading, style]}>
       <Image
         style={styles.loading}
-        source={{uri: 'https://png.icons8.com/key-2/ultraviolet/50/3498db'}}
+        source={require('../../assets/loading.gif')}
       />
     </View>
   );
