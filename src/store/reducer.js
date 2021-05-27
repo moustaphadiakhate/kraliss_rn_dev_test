@@ -23,6 +23,7 @@ import {
   CREATE_NEW_USER,
   CREATE_NEW_USER_SUCCESS,
   CREATE_NEW_USER_FAIL,
+  CLEAN_CREATE,
 } from './actionTypes';
 
 const navigate = (route, params) => {
@@ -67,7 +68,6 @@ export default function reducer(state = initialState, action) {
     case GET_USERS:
       return {...state, users: {...state.users, loading: true}};
     case GET_USERS_SUCCESS:
-      console.log('reducer action.payload: ' + JSON.stringify(action.payload));
       return {
         ...state,
         users: {...state.users, loading: false, data: action.payload.data},
@@ -117,16 +117,13 @@ export default function reducer(state = initialState, action) {
         },
       };
     case LOGIN_FAIL:
-      console.log(
-        'reducer action.payload: ' + JSON.stringify(action.error.message),
-      );
       return {
         ...state,
         login: {
           ...state.login,
           loading: false,
           success: false,
-          error: 'Error while login ' + JSON.stringify(action.error.message),
+          error: 'Error while login ' + handleResponseError(action.error),
         },
       };
 
@@ -145,20 +142,28 @@ export default function reducer(state = initialState, action) {
       };
     case REGISTER_FAIL:
       console.log(
-        'reducer action.payload: ' + JSON.stringify(action.error.message),
+        'reducer action.payload: ' + handleResponseError(action.error),
       );
-      navigate('RegisterError', {message: action.error});
+      navigate('RegisterError', {message: handleResponseError(action.error)});
       return {
         ...state,
         register: {
           ...state.register,
           loading: false,
-          error: 'Error while register ' + JSON.stringify(action.error.message),
+          error: 'Error while register ' + handleResponseError(action.error),
         },
       };
 
     case CREATE_NEW_USER:
-      return {...state, newUser: {...state.newUser, loading: true}};
+      return {
+        ...state,
+        newUser: {
+          ...state.newUser,
+          triedCreate: true,
+          loading: true,
+          success: false,
+        },
+      };
     case CREATE_NEW_USER_SUCCESS:
       return {
         ...state,
@@ -167,6 +172,7 @@ export default function reducer(state = initialState, action) {
           triedCreate: true,
           loading: false,
           success: true,
+          error: false,
           data: action.payload.data,
         },
       };
@@ -175,11 +181,25 @@ export default function reducer(state = initialState, action) {
         ...state,
         newUser: {
           ...state.newUser,
+          loading: false,
           triedCreate: true,
           loading: false,
+          success: false,
           error:
             'Error while creationg new user ' +
-            JSON.stringify(action.error.message),
+            handleResponseError(action.error),
+        },
+      };
+
+    case CLEAN_CREATE:
+      return {
+        ...state,
+        newUser: {
+          ...state.newUser,
+          triedCreate: false,
+          loading: false,
+          success: false,
+          error: false,
         },
       };
 
@@ -218,19 +238,16 @@ export const getResourceList = () => {
 };
 
 export const login = (email, password) => {
-  console.log('====================================');
-  console.log(email, password);
-  console.log('====================================');
   return {
     type: LOGIN,
     payload: {
       request: {
         method: 'POST',
         url: '/login',
-        body: {
+        data: JSON.stringify({
           email,
           password,
-        },
+        }),
       },
     },
   };
@@ -243,10 +260,10 @@ export const register = (email, password) => {
       request: {
         method: 'POST',
         url: '/register',
-        data: {
+        data: JSON.stringify({
           email,
           password,
-        },
+        }),
       },
     },
   };
@@ -266,3 +283,17 @@ export const addUser = user => {
     },
   };
 };
+
+export const creanCreate = () => {
+  return {
+    type: CLEAN_CREATE,
+  };
+};
+
+function handleResponseError(err) {
+  if (err.message) {
+    return JSON.stringify(err.message);
+  }
+
+  return JSON.stringify(err.data);
+}
