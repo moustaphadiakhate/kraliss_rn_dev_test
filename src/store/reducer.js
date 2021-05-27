@@ -25,6 +25,10 @@ import {
   CREATE_NEW_USER_FAIL,
 } from './actionTypes';
 
+const navigate = (route, params) => {
+  navigation.navigate(route, params);
+};
+
 const initialState = {
   users: {
     loading: false,
@@ -34,24 +38,29 @@ const initialState = {
   resources: {
     loading: false,
     error: false,
-    data: [],
+    data: {},
   },
   login: {
     loading: false,
     error: false,
     success: false,
+    data: {},
   },
   register: {
     loading: false,
     error: false,
     success: false,
+    data: {},
   },
   newUser: {
+    triedCreate: false,
     loading: false,
     error: false,
     success: false,
+    data: {},
   },
 };
+
 export default function reducer(state = initialState, action) {
   console.log('REDUX ACTION: ' + action.type);
   switch (action.type) {
@@ -64,7 +73,6 @@ export default function reducer(state = initialState, action) {
         users: {...state.users, loading: false, data: action.payload.data},
       };
     case GET_USERS_FAIL:
-      console.log('reducer action.payload: ' + JSON.stringify(action.error));
       return {
         ...state,
         users: {
@@ -77,7 +85,6 @@ export default function reducer(state = initialState, action) {
     case GET_RESOURCE:
       return {...state, resources: {...state.resources, loading: true}};
     case GET_RESOURCE_SUCCESS:
-      console.log('reducer action.payload: ' + JSON.stringify(action.payload));
       return {
         ...state,
         resources: {
@@ -87,7 +94,6 @@ export default function reducer(state = initialState, action) {
         },
       };
     case GET_RESOURCE_FAIL:
-      console.log('reducer action.payload: ' + JSON.stringify(action.error));
       return {
         ...state,
         resources: {
@@ -100,8 +106,7 @@ export default function reducer(state = initialState, action) {
     case LOGIN:
       return {...state, login: {...state.login, loading: true}};
     case LOGIN_SUCCESS:
-      navigate('DashboardScreen');
-      console.log('reducer action.payload: ' + JSON.stringify(action.payload));
+      navigate('Home');
       return {
         ...state,
         login: {
@@ -112,14 +117,16 @@ export default function reducer(state = initialState, action) {
         },
       };
     case LOGIN_FAIL:
-      console.log('reducer action.payload: ' + JSON.stringify(action.error));
+      console.log(
+        'reducer action.payload: ' + JSON.stringify(action.error.message),
+      );
       return {
         ...state,
         login: {
           ...state.login,
           loading: false,
           success: false,
-          error: 'Error while login',
+          error: 'Error while login ' + JSON.stringify(action.error.message),
         },
       };
 
@@ -127,47 +134,52 @@ export default function reducer(state = initialState, action) {
       return {...state, register: {...state.register, loading: true}};
     case REGISTER_SUCCESS:
       navigate('DashboardScreen');
-      console.log('reducer action.payload: ' + JSON.stringify(action.payload));
       return {
         ...state,
         register: {
           ...state.register,
           loading: false,
           success: true,
+          data: action.payload.data,
         },
       };
     case REGISTER_FAIL:
+      console.log(
+        'reducer action.payload: ' + JSON.stringify(action.error.message),
+      );
       navigate('RegisterError', {message: action.error});
-      console.log('reducer action.payload: ' + JSON.stringify(action.error));
       return {
         ...state,
         register: {
           ...state.register,
           loading: false,
-          error: 'Error while register',
+          error: 'Error while register ' + JSON.stringify(action.error.message),
         },
       };
 
     case CREATE_NEW_USER:
       return {...state, newUser: {...state.newUser, loading: true}};
     case CREATE_NEW_USER_SUCCESS:
-      console.log('reducer action.payload: ' + JSON.stringify(action.payload));
       return {
         ...state,
         newUser: {
           ...state.newUser,
+          triedCreate: true,
           loading: false,
-          newUser: action.payload.data,
+          success: true,
+          data: action.payload.data,
         },
       };
     case CREATE_NEW_USER_FAIL:
-      console.log('reducer action.payload: ' + JSON.stringify(action.error));
       return {
         ...state,
         newUser: {
           ...state.newUser,
+          triedCreate: true,
           loading: false,
-          error: 'Error while creationg new user',
+          error:
+            'Error while creationg new user ' +
+            JSON.stringify(action.error.message),
         },
       };
 
@@ -182,10 +194,6 @@ export default function reducer(state = initialState, action) {
 // depending on the status of the request. If you look at the reducer function, you see that we are returning
 // a new state based on all the dispatched actions, being the most important the GET_USERS_SUCCCESS where we
 // extract the users info from the action.payload (response from the API).
-
-const navigate = (route, params) => {
-  navigation.navigate(route, params);
-};
 
 export const getUsersList = () => {
   return {
@@ -210,13 +218,16 @@ export const getResourceList = () => {
 };
 
 export const login = (email, password) => {
+  console.log('====================================');
+  console.log(email, password);
+  console.log('====================================');
   return {
     type: LOGIN,
     payload: {
       request: {
         method: 'POST',
         url: '/login',
-        data: {
+        body: {
           email,
           password,
         },
