@@ -130,7 +130,7 @@ export default function reducer(state = initialState, action) {
     case REGISTER:
       return {...state, register: {...state.register, loading: true}};
     case REGISTER_SUCCESS:
-      navigate('DashboardScreen');
+      navigate('Home');
       return {
         ...state,
         register: {
@@ -141,9 +141,6 @@ export default function reducer(state = initialState, action) {
         },
       };
     case REGISTER_FAIL:
-      console.log(
-        'reducer action.payload: ' + handleResponseError(action.error),
-      );
       navigate('RegisterError', {message: handleResponseError(action.error)});
       return {
         ...state,
@@ -243,10 +240,10 @@ export const login = (email, password) => {
     payload: {
       request: {
         method: 'POST',
-        url: '/login',
+        url: '/api/login',
         data: JSON.stringify({
-          email,
-          password,
+          email: email,
+          password: password,
         }),
       },
     },
@@ -259,7 +256,7 @@ export const register = (email, password) => {
     payload: {
       request: {
         method: 'POST',
-        url: '/register',
+        url: '/api/register',
         data: JSON.stringify({
           email,
           password,
