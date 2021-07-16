@@ -106,7 +106,6 @@ export default function reducer(state = initialState, action) {
     case LOGIN:
       return {...state, login: {...state.login, loading: true}};
     case LOGIN_SUCCESS:
-      navigate('Home');
       return {
         ...state,
         login: {
@@ -130,7 +129,6 @@ export default function reducer(state = initialState, action) {
     case REGISTER:
       return {...state, register: {...state.register, loading: true}};
     case REGISTER_SUCCESS:
-      navigate('Home');
       return {
         ...state,
         register: {
@@ -141,7 +139,6 @@ export default function reducer(state = initialState, action) {
         },
       };
     case REGISTER_FAIL:
-      navigate('RegisterError', {message: handleResponseError(action.error)});
       return {
         ...state,
         register: {
@@ -246,6 +243,15 @@ export const login = (email, password) => {
           password: password,
         }),
       },
+      options: {
+        onSuccess({getState, dispatch, response}) {
+          navigate('Home');
+          dispatch({type: `${LOGIN}_SUCCESS`, payload: response.data});
+        },
+        onError({getState, dispatch, error}) {
+          dispatch({type: `${LOGIN}_FAIL`, error: error});
+        },
+      },
     },
   };
 };
@@ -261,6 +267,18 @@ export const register = (email, password) => {
           email,
           password,
         }),
+      },
+      options: {
+        onSuccess({getState, dispatch, response}) {
+          navigate('Home');
+          dispatch({type: `${REGISTER}_SUCCESS`, payload: response.data});
+        },
+        onError({getState, dispatch, error}) {
+          navigate('RegisterError', {
+            message: handleResponseError(action.error),
+          });
+          dispatch({type: `${REGISTER}_FAIL`, error: error});
+        },
       },
     },
   };
@@ -289,8 +307,10 @@ export const creanCreate = () => {
 
 function handleResponseError(err) {
   if (err.message) {
+    // Something happened in setting up the request that triggered an Error
     return JSON.stringify(err.message);
   }
 
+  // Request made and server responded
   return JSON.stringify(err.data);
 }
